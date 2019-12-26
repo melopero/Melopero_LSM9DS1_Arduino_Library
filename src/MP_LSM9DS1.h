@@ -1,21 +1,21 @@
 #ifndef MP_LSM9DS1_H_INCLUDED
 #define MP_LSM9DS1_H_INCLUDED
 
-#if __has_include("Wire.h")
+//#if __has_include("Wire.h")
 #include "Wire.h"
-#define I2C_AVAILABLE 1
-#else
-#define I2C_AVAILABLE 0
-#pragma message ( "warning : You need Wire.h in order to use the I2C protocol." )
-#endif // __has_include i2c
+//#define I2C_AVAILABLE 1
+//#else
+//#define I2C_AVAILABLE 0
+//#pragma message ( "warning : You need Wire.h in order to use the I2C protocol." )
+//#endif // __has_include i2c
 
-#if __has_include("SPI.h")
+//#if __has_include("SPI.h")
 #include "SPI.h"
-#define SPI_AVAILABLE 1
-#else
-#define SPI_AVAILABLE 0
-#pragma message ( "warning : You need SPI.h in order to use the SPI protocol." )
-#endif // __has_include spi
+//#define SPI_AVAILABLE 1
+//#else
+//#define SPI_AVAILABLE 0
+//#pragma message ( "warning : You need SPI.h in order to use the SPI protocol." )
+//#endif // __has_include spi
 
 #define WHO_AM_I_REG 0x0F
 #define GYRO_ID 0b01101000
@@ -36,86 +36,95 @@
 
 #define TEMPERATURE_REG 0x15
 
-#define GYRO_X_REG = 0x18
-#define GYRO_Y_REG = 0x1A
-#define GYRO_Z_REG = 0x1C
+#define GYRO_X_REG 0x18
+#define GYRO_Y_REG 0x1A
+#define GYRO_Z_REG 0x1C
 
-#define ACC_X_REG = 0x28
-#define ACC_Y_REG = 0x2A
-#define ACC_Z_REG = 0x2C
+#define ACC_X_REG 0x28
+#define ACC_Y_REG 0x2A
+#define ACC_Z_REG 0x2C
 
-#define MAG_X_REG = 0x28
-#define MAG_Y_REG = 0x2A
-#define MAG_Z_REG = 0x2C
+#define MAG_X_REG 0x28
+#define MAG_Y_REG 0x2A
+#define MAG_Z_REG 0x2C
 
 
-#define INT1_CTRL_REG = 0x0C
-#define INT2_CTRL_REG = 0x0D
+#define INT1_CTRL_REG 0x0C
+#define INT2_CTRL_REG 0x0D
 
-#define GYRO_INT_CFG_REG = 0x30
-#define GYRO_X_INT_THR_REG = 0x31
-#define GYRO_Y_INT_THR_REG = 0x33
-#define GYRO_Z_INT_THR_REG = 0x35
-#define GYRO_INT_DUR_REG = 0x37
-#define GYRO_INT_SRC_REG = 0x14
+#define GYRO_INT_CFG_REG 0x30
+#define GYRO_X_INT_THR_REG 0x31
+#define GYRO_Y_INT_THR_REG 0x33
+#define GYRO_Z_INT_THR_REG 0x35
+#define GYRO_INT_DUR_REG 0x37
+#define GYRO_INT_SRC_REG 0x14
 
-#define ACC_INT_CFG_REG = 0x06
-#define ACC_X_INT_THR_REG = 0x07
-#define ACC_Y_INT_THR_REG = 0x08
-#define ACC_Z_INT_THR_REG = 0x09
-#define ACC_INT_DUR_REG = 0x0A
-#define ACC_INT_SRC_REG = 0x26
+#define ACC_INT_CFG_REG 0x06
+#define ACC_X_INT_THR_REG 0x07
+#define ACC_Y_INT_THR_REG 0x08
+#define ACC_Z_INT_THR_REG 0x09
+#define ACC_INT_DUR_REG 0x0A
+#define ACC_INT_SRC_REG 0x26
 
-#define MAG_INT_CFG_REG = 0x30
-#define MAG_INT_THR_REG = 0x32
-#define MAG_INT_SRC_REG = 0x31
+#define MAG_INT_CFG_REG 0x30
+#define MAG_INT_THR_REG 0x32
+#define MAG_INT_SRC_REG 0x31
 
-enum class GyroscopeRange : float {
-    AR_245DPS = 8.75f,
-    AR_500DPS = 17.5f,
-    AR_2000DPS = 70f
+namespace GyroscopeRange {
+    const float AR_245DPS = 8.75f;
+    const float AR_500DPS = 17.5f;
+    const float AR_2000DPS = 70.0f;
 };
 
-enum class AccelerometerRange : float {
-    2_g = 0.061f,
-    4_g = 0.122f,
-    8_g = 0.244f,
-    16_g = 0.732f
+namespace AccelerometerRange {
+    const float two_g = 0.061f;
+    const float four_g = 0.122f;
+    const float eight_g = 0.244f;
+    const float sixteen_g = 0.732f;
 };
 
-enum class MagnetometerRange : float {
-    4_G = 0.14f,
-    8_G = 0.29f,
-    12_G = 0.43f,
-    16_G = 0.58f
+namespace MagnetometerRange {
+    const float four_G = 0.14f;
+    const float eight_G = 0.29f;
+    const float twelve_G = 0.43f;
+    const float sixteen_G = 0.58f;
 };
 
-enum class OutputDataRate : uint8_t {
-    POWER_DOWN = 0b000,
-    10_Hz = 0b001,
-    50_Hz = 0b010,
-    119_Hz = 0b011,
-    238_Hz = 0b100,
-    476_Hz = 0b101,
-    952_Hz = 0b110
+namespace OutputDataRate {
+    const uint8_t POWER_DOWN = 0b000;
+    const uint8_t Hz_10 = 0b001;
+    const uint8_t Hz_50 = 0b010;
+    const uint8_t Hz_119 = 0b011;
+    const uint8_t Hz_238 = 0b100;
+    const uint8_t Hz_476 = 0b101;
+    const uint8_t Hz_952 = 0b110;
 };
 
-enum class MagnetometerOutputDataRate : uint8_t {
-    0_625_Hz = 0b000,
-    1_25_Hz = 0b001,
-    2_5_Hz = 0b010,
-    5_Hz = 0b011,
-    10_Hz = 0b100,
-    20_Hz = 0b101,
-    40_Hz = 0b110,
-    80_Hz = 0b111
+namespace MagnetometerOutputDataRate {
+    const uint8_t Hz_0_625 = 0b000;
+    const uint8_t Hz_1_25 = 0b001;
+    const uint8_t Hz_2_5 = 0b010;
+    const uint8_t Hz_5 = 0b011;
+    const uint8_t Hz_10 = 0b100;
+    const uint8_t Hz_20 = 0b101;
+    const uint8_t Hz_40 = 0b110;
+    const uint8_t Hz_80 = 0b111;
 };
 
-enum class MagnetometerMode : uint8_t {
-    CONTINUOUS = 0b00,
-    SINGLE = 0b01,
-    POWER_DOWN = 0b10
+namespace MagnetometerMode {
+    const uint8_t CONTINUOUS = 0b00;
+    const uint8_t SINGLE = 0b01;
+    const uint8_t POWER_DOWN = 0b10;
 };
+
+namespace ErrorCodes {
+    const int8_t noError = 0;
+    const int8_t gyroCommunicationError = -1;
+    const int8_t magCommunicationError = -2;
+    const int8_t i2cCommunicationError = -3;
+    const int8_t spiCommunicationError = -4;
+    const int8_t invalidDataFormatOrRange = -5;
+}
 
 class MP_LSM9DS1 {
 
@@ -127,20 +136,20 @@ class MP_LSM9DS1 {
         uint8_t spiMagPin;
         uint8_t gyroIdentifier;
         uint8_t magIdentifier;
-        SPISettings spiSettings;
-        GyroscopeRange gyroScale;
-        AccelerometerRange accScale;
-        MagnetometerRange magScale;
+        SPISettings* spiSettings = nullptr;
+        float gyroScale;
+        float accScale;
+        float magScale;
         bool i2cEnabled;
         bool spiEnabled;
 
-        int16_t accRawMeasurements[3];
-        int16_t gyroRawMeasurements[3];
-        int16_t magRawMeasurements[3];
+        int16_t accRawMeasurements[3] = {0,0,0};
+        int16_t gyroRawMeasurements[3] = {0,0,0};
+        int16_t magRawMeasurements[3] = {0,0,0};
 
-        float accMeasurements[3]; /**Contains the last measured values for the accelerometer, expressed in gravities (g's, 1 g = 9.8 ms-2) */
-        float gyroMeasurements[3]; /**Contains the last updated values for the gyroscope, expressed in degrees per second (dps) */
-        float magMeasurements[3]; /**Contains the last measured values for the magntometer, expressed in Gauss */
+        float accMeasurements[3] = {0.0f,0.0f,0.0f}; /**Contains the last measured values for the accelerometer, expressed in gravities (g's, 1 g = 9.8 ms-2) */
+        float gyroMeasurements[3] = {0.0f,0.0f,0.0f}; /**Contains the last updated values for the gyroscope, expressed in degrees per second (dps) */
+        float magMeasurements[3] = {0.0f,0.0f,0.0f}; /**Contains the last measured values for the magntometer, expressed in Gauss */
 
     //constructor
     public:
@@ -149,7 +158,7 @@ class MP_LSM9DS1 {
     //methods
     public:
         int8_t useI2C(uint8_t gyroAddress = 0x6b, uint8_t magAddress = 0x1e);
-        int8_t useSPI(uint8_t gyroChipSelectPin , uint8_t magnetometerChipSelectPin, uint32_t maxTransmissionFreq = 10 ** 7);
+        int8_t useSPI(uint8_t gyroChipSelectPin , uint8_t magnetometerChipSelectPin, uint32_t maxTransmissionFreq = 10000000);
 
         uint8_t readByte(uint8_t deviceIdentifier, uint8_t registerAddress);
         uint8_t writeByte(uint8_t deviceIdentifier, uint8_t registerAddress, uint8_t value);
@@ -170,20 +179,20 @@ class MP_LSM9DS1 {
 
 
         /** Sets the accelerometer output-data-rate. */
-        int8_t setGyroODR(OutputDataRate odr);
+        int8_t setGyroODR(uint8_t odr);
 
 
         /** Sets the accelerometer output-data-rate. */
-        int8_t setAccODR(OutputDataRate odr);
+        int8_t setAccODR(uint8_t odr);
 
 
         /** Sets the magnetometer output-data-rate and operating mode.
          *  (continuous, single conversion, power down). */
-        int8_t setMagODR(MagnetometerOutputDataRate odr, MagnetometerMode mode = MagnetometerMode::CONTINUOUS);
+        int8_t setMagODR(uint8_t magOdr, uint8_t magMode = MagnetometerMode::CONTINUOUS);
 
-        int8_t setGyroRange(GyroscopeRange range);
-        int8_t setAccRange(AccelerometerRange range);
-        int8_t setMagRange(MagnetometerRange range);
+        int8_t setGyroRange(float gyroRange);
+        int8_t setAccRange(float accRange);
+        int8_t setMagRange(float magRange);
 
         /**
          * @param x/y/zThreshold When a measure exceeds (or is lower) than the threshold
@@ -203,7 +212,7 @@ class MP_LSM9DS1 {
                                 float yThreshold, bool yDetect, bool yDetectHigh,
                                 float zThreshold, bool zDetect, bool zDetectHigh,
                                 bool andEventCombination = false, uint8_t samplesToRecognize = 0,
-                                bool waitBeforeExitingInterrupt = false, hardwareInterrupt = false);
+                                bool waitBeforeExitingInterrupt = false, bool hardwareInterrupt = false);
 
         /**
          * @param x/y/zThreshold the interrupt threshold value expressed in dps (degrees per second).
@@ -251,7 +260,7 @@ class MP_LSM9DS1 {
         void updateAccMeasurements();
         void updateMagMeasurements();
 
-        char[] getErrorString(int8_t errorCode);
+        String getErrorString(int8_t errorCode);
 
     private:
         uint16_t to15BitWord(int16_t value);
