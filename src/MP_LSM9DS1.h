@@ -198,7 +198,7 @@ class MP_LSM9DS1 {
          * @param x/y/zThreshold When a measure exceeds (or is lower) than the threshold
          *        value it triggers an interrupt. This values are expressed in g's (gravity = 9.8 ms^-2)
          *        The given value will be converted to an unsigned 8 bit int through this formula :
-         *        rawThreshold = (uint8_t) (acceleratorRange / Threshold)
+         *        rawThreshold = (uint8_t) (Actual Threshold * 255.0f / Acc Range)
          * @param x/y/zDetect wether the given axis should be detected.
          * @param x/y/zDetectHigh if True detects samples that are over the threshold.
          * @param andEventCombination if True all specified interrupt conditions must be

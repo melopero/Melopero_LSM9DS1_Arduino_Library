@@ -259,28 +259,28 @@ int8_t MP_LSM9DS1::setAccInterrupt( float xThreshold, bool xDetect, bool xDetect
     else if (accScale == AccelerometerRange::eight_g)
         accRange = 8;
     else if (accScale == AccelerometerRange::sixteen_g)
-        accScale = 16;
+        accRange = 16;
     else
         return ErrorCodes::invalidDataFormatOrRange;
 
-    //real interrupt : acc_range / raw_threshold therefore : float_thr = acc_range / raw_ths -> raw_ths = acc_range / float thr
+    //real interrupt : raw ths = float ths * 255 / acc range
     if (xDetect){
-        uint8_t rawXThreshold = xThreshold == 0 ? 0 : (uint8_t) (accRange / xThreshold);
+        uint8_t rawXThreshold = xThreshold == 0 ? 0 : (uint8_t) (xThreshold * 255.0f / accRange);
         this->writeByte(this->gyroIdentifier, ACC_X_INT_THR_REG, rawXThreshold);
         this->writeFlag(this->gyroIdentifier, ACC_INT_CFG_REG, xDetectHigh ? 0b10 : 0b01, 2, 2);
     }
     if (yDetect){
-        uint8_t rawYThreshold = yThreshold == 0 ? 0 : (uint8_t) (accRange / yThreshold);
+        uint8_t rawYThreshold = yThreshold == 0 ? 0 : (uint8_t) (yThreshold * 255.0f / accRange);
         this->writeByte(this->gyroIdentifier, ACC_Y_INT_THR_REG, rawYThreshold);
         this->writeFlag(this->gyroIdentifier, ACC_INT_CFG_REG, yDetectHigh ? 0b10 : 0b01, 4, 2);
     }
     if (zDetect){
-        uint8_t rawZThreshold = zThreshold == 0 ? 0 : (uint8_t) (accRange / zThreshold);
+        uint8_t rawZThreshold = zThreshold == 0 ? 0 : (uint8_t) (zThreshold * 255.0f / accRange);
         this->writeByte(this->gyroIdentifier, ACC_Z_INT_THR_REG, rawZThreshold);
         this->writeFlag(this->gyroIdentifier, ACC_INT_CFG_REG, zDetectHigh ? 0b10 : 0b01, 6, 2);
     }
 
-    this->writeByte(this->gyroIdentifier, ACC_INT_DUR_REG, samplesToRecognize | waitBeforeExitingInterrupt ? 0x80 : 0x00);
+    this->writeByte(this->gyroIdentifier, ACC_INT_DUR_REG, samplesToRecognize | (waitBeforeExitingInterrupt ? 0x80 : 0x00));
     this->writeFlag(this->gyroIdentifier, INT1_CTRL_REG, hardwareInterrupt? 1 : 0, 7, 1);
 
     return 0;
