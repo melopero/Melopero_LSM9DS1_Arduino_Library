@@ -119,6 +119,16 @@ uint8_t MP_LSM9DS1::writeByte(uint8_t deviceIdentifier, uint8_t registerAddress,
     return bytesWritten;
 }
 
+/**Writes the flag bits in the spcified register at the specified position.\n
+ * start : start of the flag bits, the MSB has an index of 8 and the lsb has an index of 1.\n
+ * length : how many bits of the flag to set.\n
+ * Example:
+ * register value = 0b11110000\n
+ * flag value = 0b0011\n
+ * start = 6\n
+ * length = 4\n
+ * result = 0b11001100
+ */
 uint8_t MP_LSM9DS1::writeFlag(uint8_t deviceIdentifier, uint8_t registerAddress, uint8_t flag, uint8_t start, uint8_t length){
     uint8_t _end = start - length;
     uint8_t regContent = this->readByte(deviceIdentifier, registerAddress);
@@ -240,6 +250,20 @@ int8_t MP_LSM9DS1::resetInterruptSettings(bool resetAccInterrupt, bool resetGyro
 }
 
 
+/**
+ * @param x/y/zThreshold When a measure exceeds (or is lower) than the threshold
+ *        value it triggers an interrupt. This values are expressed in g's (gravity = 9.8 ms^-2)
+ *        The given value will be converted to an unsigned 8 bit int through this formula :
+ *        rawThreshold = (uint8_t) (Actual Threshold * 255.0f / Acc Range)
+ * @param x/y/zDetect wether the given axis should be detected.
+ * @param x/y/zDetectHigh if True detects samples that are over the threshold.
+ * @param andEventCombination if True all specified interrupt conditions must be
+ *        triggered to generate an interrupt
+ * @param samplesToRecognize the number of samples that trigger the interrupt to measure
+ *        before actually triggering the interrupt
+ * @param waitBeforeExitingInterrupt the number of samples to measure before exiting the interrupt
+ * @param hardwareInterrupt if True generates an hardware interrupt on the int1 pin
+ */
 int8_t MP_LSM9DS1::setAccInterrupt( float xThreshold, bool xDetect, bool xDetectHigh,
                                     float yThreshold, bool yDetect, bool yDetectHigh,
                                     float zThreshold, bool zDetect, bool zDetectHigh,
@@ -286,6 +310,20 @@ int8_t MP_LSM9DS1::setAccInterrupt( float xThreshold, bool xDetect, bool xDetect
     return 0;
 }
 
+/**
+ * @param x/y/zThreshold the interrupt threshold value expressed in dps (degrees per second).
+ *        The given values will be converted to a signed 15 bit integer through this formula :
+ *        rawThreshold = to15Bit((int16_t) ( Threshold * 1000 / this->gyroScale))
+ * @param x/y/zDetect wether the given axis should be detected.
+ * @param x/y/zDetectHigh if True detects samples that are over the threshold.
+ * @param andEventCombination if True all specified interrupt conditions must be
+ *        triggered to generate an interrupt
+ * @param samplesToRecognize the number of samples that trigger the interrupt to measure
+ *        before actually triggering the interrupt
+ * @param waitBeforeExitingInterrupt the number of samples to measure before exiting the interrupt
+ * @param decrementCounter
+ * @param hardwareInterrupt if True generates an hardware interrupt on the int1 pin
+ */
 int8_t MP_LSM9DS1::setGyroInterrupt(float xThreshold, bool xDetect, bool xDetectHigh,
                         float yThreshold, bool yDetect, bool yDetectHigh,
                         float zThreshold, bool zDetect, bool zDetectHigh,
@@ -351,7 +389,17 @@ uint16_t MP_LSM9DS1::to15BitWord(int16_t value){
         return convertedValue;
     }}
 
-
+/**
+ * @param threshold If measurement exceeds on positively (or negatively) the
+ *        threshold, an interrupt is generated, This value is expressed in gauss and must be positive.
+ *        The given values will be converted to an unsigned 15 bit integer with this formula:
+ *        uint16_t uint15Threshold = (uint16_t) (threshold * 1000 / this->magScale);
+ * @param x/y/zDetect if True detects samples from the specified axes
+ * @param interruptActiveHigh if True the interrupt signal on the INT_M pin is HIGH
+ * @param latchInterrupt Once latched, the INT_M pin remains in the same
+          state until getMagInterrupt is called.
+ * @param hardwareInterrupt if True generates an hardware interrupt on the INT_M pin
+ */
 int8_t MP_LSM9DS1::setMagInterrupt( float threshold, bool xDetect, bool yDetect, bool zDetect,
                                     bool interruptActiveHigh, bool latchInterrupt,
                                     bool hardwareInterrupt){

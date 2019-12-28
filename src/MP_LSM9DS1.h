@@ -248,7 +248,7 @@ class MP_LSM9DS1 {
          */
         int8_t setMagInterrupt( float threshold, bool xDetect, bool yDetect, bool zDetect,
                                 bool interruptActiveHigh =false, bool latchInterrupt = false,
-                                bool hardware_interrupt = false);
+                                bool hardwareInterrupt = false);
 
         int8_t resetInterruptSettings(bool resetAccInterrupt = true, bool resetGyroInterrupt = true, bool resetMagInterrupt = true);
 
