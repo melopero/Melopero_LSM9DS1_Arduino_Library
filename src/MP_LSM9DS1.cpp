@@ -32,16 +32,20 @@ int8_t MP_LSM9DS1::useSPI(uint8_t gyroChipSelectPin , uint8_t magChipSelectPin, 
     pinMode(gyroChipSelectPin, OUTPUT);
     pinMode(magChipSelectPin, OUTPUT);
 
+    digitalWrite(gyroChipSelectPin, HIGH);
+    digitalWrite(magChipSelectPin, HIGH);
+
     if ((this->spiSettings) != nullptr)
         delete (this->spiSettings);
-    this->spiSettings = new SPISettings(maxTransmissionFreq, MSBFIRST, SPI_MODE2);
+    this->spiSettings = new SPISettings(maxTransmissionFreq, MSBFIRST, SPI_MODE0);
     SPI.begin();
 
 
     SPI.beginTransaction(*(this->spiSettings));
     digitalWrite (gyroChipSelectPin, LOW);
 
-    uint8_t whoami = (SPI.transfer16(WHO_AM_I_REG | SPI_READ_FLAG << 8)) % (1 << 8);
+    SPI.transfer(WHO_AM_I_REG | SPI_READ_FLAG);
+    uint8_t whoami = SPI.transfer(0x00);
 
     if (whoami == GYRO_ID){
         this->spiGyroPin = gyroChipSelectPin;
@@ -52,6 +56,9 @@ int8_t MP_LSM9DS1::useSPI(uint8_t gyroChipSelectPin , uint8_t magChipSelectPin, 
         this->spiMagPin = gyroChipSelectPin;
     }
     else {
+        this->spiEnabled = false;
+        digitalWrite(gyroChipSelectPin, HIGH);
+        SPI.endTransaction();
         return -4;
     }
 
@@ -61,8 +68,8 @@ int8_t MP_LSM9DS1::useSPI(uint8_t gyroChipSelectPin , uint8_t magChipSelectPin, 
     digitalWrite(gyroChipSelectPin, HIGH);
     SPI.endTransaction();
 
-    //enable spi read operations
-    this->writeFlag(this->magIdentifier, MAG_CONTROL_REG_3, 0b1, 3, 1);
+    //enable spi read operations...
+    this->writeByte(this->magIdentifier, MAG_CONTROL_REG_3, 0x00);
     //TODO: disable i2c ?
 
     return 0;
@@ -84,11 +91,13 @@ uint8_t MP_LSM9DS1::readByte(uint8_t deviceIdentifier, uint8_t registerAddress){
     else if (this->spiEnabled){
             SPI.beginTransaction(*(this->spiSettings));
             digitalWrite(deviceIdentifier, LOW);
-            uint16_t registerQuery = registerAddress | SPI_READ_FLAG << 8;
-            uint16_t result = SPI.transfer16(registerQuery);
+
+            SPI.transfer(registerAddress | SPI_READ_FLAG);
+            uint8_t result = SPI.transfer(0x00);
+
             digitalWrite(deviceIdentifier, HIGH);
             SPI.endTransaction();
-            return (uint8_t) (result % (1 << 8));
+            return result;
     }
     else {
         return 0;    }
@@ -106,8 +115,10 @@ uint8_t MP_LSM9DS1::writeByte(uint8_t deviceIdentifier, uint8_t registerAddress,
     else if (this->spiEnabled){
         SPI.beginTransaction(*(this->spiSettings));
         digitalWrite(deviceIdentifier, LOW);
-        uint16_t data = registerAddress << 8 | value;
-        SPI.transfer16(data);
+
+        SPI.transfer(registerAddress);
+        SPI.transfer(value);
+
         digitalWrite(deviceIdentifier, HIGH);
         SPI.endTransaction();
         bytesWritten = 1;
