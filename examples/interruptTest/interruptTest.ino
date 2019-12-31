@@ -32,7 +32,7 @@ void setup() {
   //                    needs to collect 119 samples ) of "triggering" samples.
   //  (bool) false ---> should the device wait for the number of samples specified above before exiting the interrupt
   //  (bool) true  ---> this flag determines if an hardware interrupt should be fired on the int1 pin.
-  device.setAccInterrupt(.5f, true, false, 0, false, false, 0, false, false,
+  device.setAccInterrupt(.5f, true, true, 0, false, false, 0, false, false,
                                         false, 100, false, true);
                                         
   attachInterrupt(digitalPinToInterrupt(interruptPin), interruptHandler, RISING);

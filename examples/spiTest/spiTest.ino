@@ -1,17 +1,17 @@
 #include <MP_LSM9DS1.h>
 
 MP_LSM9DS1 device;
-int gyroSelect = 10;
-int magSelect = 11;
-int outputRate = 1;
-int waitMillis = 1000 / outputRate;
+int gyroSelect = 9;
+int magSelect = 10;
+int waitMillis = 1000;
 
 void setup() {
   Serial.begin(9600);
 
   //Set the device to use the SPI communication protocol. You have to provide the chip select pins that you use.
   Serial.print("starting, setup SPI: ");
-  Serial.println(device.useSPI(gyroSelect, magSelect));
+  int s = device.useSPI(gyroSelect, magSelect);
+  Serial.println(device.getErrorString(s));
   
   Serial.print("Setting Gyro output data rate: ");
   Serial.println(device.setGyroODR(OutputDataRate::Hz_10));

@@ -8,6 +8,9 @@ void setup() {
   Serial.begin(9600);
   Serial.print("starting, setup i2c: ");
   Serial.println(device.useI2C());
+  Serial.print("Resetting settings... ");
+  Serial.println(device.resetSettings());
+ 
   Serial.print("Setting Gyro output data rate: ");
   Serial.println(device.setGyroODR(OutputDataRate::Hz_10));
   Serial.print("Setting Accelerometer output data rate: ");
