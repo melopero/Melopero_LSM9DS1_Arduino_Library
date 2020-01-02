@@ -124,6 +124,7 @@ namespace ErrorCodes {
     const int8_t i2cCommunicationError = -3;
     const int8_t spiCommunicationError = -4;
     const int8_t invalidDataFormatOrRange = -5;
+    const int8_t noCommunicationProtocolSpecified = -6;
 }
 
 class MP_LSM9DS1 {

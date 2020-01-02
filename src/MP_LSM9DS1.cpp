@@ -1,8 +1,8 @@
 #include "MP_LSM9DS1.h"
 
-//TODO: set interrupts functions accept only raw parameters (except for the mag one)
-//TODO: update with normal paramter!(look at python code)
-
+//Creates the object representing the device. To actually use the device
+//you have to call useSPI(gyropin, magpin) or useI2C() to set the communication
+//protocol that you want to use.
 MP_LSM9DS1::MP_LSM9DS1(){
     this->gyroScale = GyroscopeRange::AR_245DPS;
     this->accScale = AccelerometerRange::two_g;
@@ -11,6 +11,9 @@ MP_LSM9DS1::MP_LSM9DS1(){
     this->spiEnabled = false;
 }
 
+//Configures the device (and library) to use the i2c protocol.
+//If no gyroAddress or magAddress are specified the default
+//used addresses will be.
 int8_t MP_LSM9DS1::useI2C(uint8_t gyroAddress, uint8_t magAddress){
     this->i2cEnabled = true;
     this->spiEnabled = false;
@@ -21,58 +24,71 @@ int8_t MP_LSM9DS1::useI2C(uint8_t gyroAddress, uint8_t magAddress){
 
     this->gyroIdentifier = this->i2cGyroAddress;
     this->magIdentifier = this->i2cMagAddress;
-    //enable i2c in control registers mag control 3 ...
-    return 0;
+
+    //TODO: disable i2c flag in mag control 3.
+    //      The flag is never changed by the library.
+
+    return ErrorCodes::noError;
 }
 
+//Configures the device (and library) to use the spi protocol.
+//You must specify the chip select pins used for gyro and magnetometer.
 int8_t MP_LSM9DS1::useSPI(uint8_t gyroChipSelectPin , uint8_t magChipSelectPin, uint32_t maxTransmissionFreq){
     this->spiEnabled = true;
     this->i2cEnabled = false;
 
+    //Setting up the CS pin.
     pinMode(gyroChipSelectPin, OUTPUT);
     pinMode(magChipSelectPin, OUTPUT);
 
     digitalWrite(gyroChipSelectPin, HIGH);
     digitalWrite(magChipSelectPin, HIGH);
 
+    //Creating the SPISettings
     if ((this->spiSettings) != nullptr)
         delete (this->spiSettings);
     this->spiSettings = new SPISettings(maxTransmissionFreq, MSBFIRST, SPI_MODE0);
     SPI.begin();
 
-
+    //Checking if the SPI pins are setup correctly.
     SPI.beginTransaction(*(this->spiSettings));
+    //Starting communication with the gyroscope.
     digitalWrite (gyroChipSelectPin, LOW);
 
+    //reading the WHO_AM_I register to see with which device we are communicating.
     SPI.transfer(WHO_AM_I_REG | SPI_READ_FLAG);
     uint8_t whoami = SPI.transfer(0x00);
 
+    //Are we communicating with the gyroscope?
     if (whoami == GYRO_ID){
         this->spiGyroPin = gyroChipSelectPin;
         this->spiMagPin = magChipSelectPin;
     }
+    //Are we communicating with the magnetometer?
     else if (whoami == MAG_ID){
         this->spiGyroPin = magChipSelectPin;
         this->spiMagPin = gyroChipSelectPin;
     }
+    //Error!
     else {
+        //Clean up and return error code
         this->spiEnabled = false;
         digitalWrite(gyroChipSelectPin, HIGH);
         SPI.endTransaction();
-        return -4;
+        return ErrorCodes::spiCommunicationError;
     }
 
     this->gyroIdentifier = this->spiGyroPin;
     this->magIdentifier = this->spiMagPin;
 
+    //End the communication.
     digitalWrite(gyroChipSelectPin, HIGH);
     SPI.endTransaction();
 
-    //enable spi read operations...
+    //enable spi read operations... ( fundamental )
     this->writeByte(this->magIdentifier, MAG_CONTROL_REG_3, 0x00);
-    //TODO: disable i2c ?
 
-    return 0;
+    return ErrorCodes::noError;
 }
 
 
@@ -89,18 +105,24 @@ uint8_t MP_LSM9DS1::readByte(uint8_t deviceIdentifier, uint8_t registerAddress){
     }
 
     else if (this->spiEnabled){
-            SPI.beginTransaction(*(this->spiSettings));
-            digitalWrite(deviceIdentifier, LOW);
+        //Select device through CS pin.
+        SPI.beginTransaction(*(this->spiSettings));
+        digitalWrite(deviceIdentifier, LOW);
 
-            SPI.transfer(registerAddress | SPI_READ_FLAG);
-            uint8_t result = SPI.transfer(0x00);
+        //Select register in read mode.
+        SPI.transfer(registerAddress | SPI_READ_FLAG);
+        //Read reagister!
+        uint8_t result = SPI.transfer(0x00);
 
-            digitalWrite(deviceIdentifier, HIGH);
-            SPI.endTransaction();
-            return result;
+        //End communication with the device.
+        digitalWrite(deviceIdentifier, HIGH);
+        SPI.endTransaction();
+        return result;
     }
+    //Error: No communication protocol specified!
     else {
-        return 0;    }
+        return ErrorCodes::noCommunicationProtocolSpecified;
+      }
 }
 
 uint8_t MP_LSM9DS1::writeByte(uint8_t deviceIdentifier, uint8_t registerAddress, uint8_t value){
@@ -113,18 +135,22 @@ uint8_t MP_LSM9DS1::writeByte(uint8_t deviceIdentifier, uint8_t registerAddress,
         Wire.endTransmission();
     }
     else if (this->spiEnabled){
+        //Select device through CS pin.
         SPI.beginTransaction(*(this->spiSettings));
         digitalWrite(deviceIdentifier, LOW);
 
+        //Select register in write mode.
         SPI.transfer(registerAddress);
+        //Write value to register.
         SPI.transfer(value);
 
+        //End communication with the device.
         digitalWrite(deviceIdentifier, HIGH);
         SPI.endTransaction();
         bytesWritten = 1;
     }
     else {
-        return bytesWritten;
+        return ErrorCodes::noCommunicationProtocolSpecified;
     }
 
     return bytesWritten;
@@ -157,8 +183,10 @@ void MP_LSM9DS1::close(){
     else if (this->spiEnabled){
         SPI.end();
         delete (this->spiSettings);
-        //GPIO cleanup!    }
+        //GPIO cleanup!
+    }
 }
+
 
 int8_t MP_LSM9DS1::resetSettings(){
     int8_t bytesWritten = 0;
@@ -169,14 +197,17 @@ int8_t MP_LSM9DS1::resetSettings(){
     return this->resetInterruptSettings();
 }
 
+//Sets the gyroscope's output data rate.
 int8_t MP_LSM9DS1::setGyroODR(uint8_t odr){
     return this->writeFlag(this->gyroIdentifier, GYRO_CONTROL_REG_1, odr, 8, 3) > 0 ? 0 : -1;
 }
 
+//Sets the Accelerometer's output data rate.
 int8_t MP_LSM9DS1::setAccODR(uint8_t odr){
     return this->writeFlag(this->gyroIdentifier, ACC_CONTROL_REG_6, odr, 8, 3) > 0 ? 0 : -1;
 }
 
+//Sets the magnetometer's output data rate and mode.
 int8_t MP_LSM9DS1::setMagODR(uint8_t magOdr, uint8_t magMode){
     int8_t bytesWritten = 0;
     bytesWritten = this->writeFlag(this->magIdentifier, MAG_CONTROL_REG_3, magMode, 2, 2);
@@ -194,7 +225,7 @@ int8_t MP_LSM9DS1::setGyroRange(float gyroRange){
     else if (gyroRange == GyroscopeRange::AR_2000DPS)
         flag = 0b11;
     else
-        return -5;
+        return ErrorCodes::invalidDataFormatOrRange;
 
     this->gyroScale = gyroRange;
     int8_t bytesWritten = 0;
@@ -214,7 +245,7 @@ int8_t MP_LSM9DS1::setAccRange(float accRange){
     else if (accRange == AccelerometerRange::sixteen_g)
         flag = 0b01;
     else
-        return -5;
+        return ErrorCodes::invalidDataFormatOrRange;
 
     this->accScale = accRange;
     int8_t bytesWritten = 0;
@@ -234,7 +265,7 @@ int8_t MP_LSM9DS1::setMagRange(float magRange){
     else if (magRange == MagnetometerRange::sixteen_G)
         flag = 0b11;
     else
-        return -5;
+        return ErrorCodes::invalidDataFormatOrRange;
 
     this->magScale = magRange;
     int8_t bytesWritten = 0;
@@ -318,7 +349,7 @@ int8_t MP_LSM9DS1::setAccInterrupt( float xThreshold, bool xDetect, bool xDetect
     this->writeByte(this->gyroIdentifier, ACC_INT_DUR_REG, samplesToRecognize | (waitBeforeExitingInterrupt ? 0x80 : 0x00));
     this->writeFlag(this->gyroIdentifier, INT1_CTRL_REG, hardwareInterrupt? 1 : 0, 7, 1);
 
-    return 0;
+    return ErrorCodes::noError;
 }
 
 /**
@@ -343,7 +374,7 @@ int8_t MP_LSM9DS1::setGyroInterrupt(float xThreshold, bool xDetect, bool xDetect
                         bool hardwareInterrupt){
 
     if (samplesToRecognize > 0x7F)
-        return -5;
+        return ErrorCodes::invalidDataFormatOrRange;
 
     //reset interrupt
     this->writeByte(this->gyroIdentifier, GYRO_INT_CFG_REG, andEventCombination ? 0x80 : 0x00);
@@ -354,7 +385,7 @@ int8_t MP_LSM9DS1::setGyroInterrupt(float xThreshold, bool xDetect, bool xDetect
         int16_t rawXThreshold = (int16_t) ( xThreshold * 1000 / this->gyroScale);
         uint16_t _15_bitXThreshold = this->to15BitWord(rawXThreshold);
         if (_15_bitXThreshold == 0x8000)
-            return -5;
+            return ErrorCodes::invalidDataFormatOrRange;
         _15_bitXThreshold |= decrementCounter ? 0x8000 : 0x0000;
         this->writeByte(this->gyroIdentifier, GYRO_X_INT_THR_REG, (uint8_t) (_15_bitXThreshold / (1 << 8)));
         this->writeByte(this->gyroIdentifier, GYRO_X_INT_THR_REG + 1, (uint8_t) (_15_bitXThreshold % (1 << 7)));
@@ -365,7 +396,7 @@ int8_t MP_LSM9DS1::setGyroInterrupt(float xThreshold, bool xDetect, bool xDetect
         int16_t rawYThreshold = (int16_t) ( yThreshold * 1000 / this->gyroScale);
         uint16_t _15_bitYThreshold = this->to15BitWord(rawYThreshold);
         if (_15_bitYThreshold == 0x8000)
-            return -5;
+            return ErrorCodes::invalidDataFormatOrRange;
         this->writeByte(this->gyroIdentifier, GYRO_Y_INT_THR_REG, (uint8_t) (_15_bitYThreshold / (1 << 8)));
         this->writeByte(this->gyroIdentifier, GYRO_Y_INT_THR_REG + 1, (uint8_t) (_15_bitYThreshold % (1 << 7)));
         this->writeFlag(this->gyroIdentifier, GYRO_INT_CFG_REG, yDetectHigh ? 0b10 : 0b01, 4, 2);
@@ -375,7 +406,7 @@ int8_t MP_LSM9DS1::setGyroInterrupt(float xThreshold, bool xDetect, bool xDetect
         int16_t rawZThreshold = (int16_t) ( zThreshold * 1000 / this->gyroScale);
         uint16_t _15_bitZThreshold = this->to15BitWord(rawZThreshold);
         if (_15_bitZThreshold == 0x8000)
-            return -5;
+            return ErrorCodes::invalidDataFormatOrRange;
         this->writeByte(this->gyroIdentifier, GYRO_Z_INT_THR_REG, (uint8_t) (_15_bitZThreshold / (1 << 8)));
         this->writeByte(this->gyroIdentifier, GYRO_Z_INT_THR_REG + 1, (uint8_t) (_15_bitZThreshold % (1 << 7)));
         this->writeFlag(this->gyroIdentifier, GYRO_INT_CFG_REG, zDetectHigh ? 0b10 : 0b01, 6, 2);    }
@@ -383,7 +414,7 @@ int8_t MP_LSM9DS1::setGyroInterrupt(float xThreshold, bool xDetect, bool xDetect
     this->writeByte(this->gyroIdentifier, GYRO_INT_DUR_REG, samplesToRecognize | (waitBeforeExitingInterrupt ? 0x80 : 0x00));
     this->writeFlag(this->gyroIdentifier, INT1_CTRL_REG, hardwareInterrupt ? 1 : 0, 8, 1);
 
-    return 0;
+    return ErrorCodes::noError;
 }
 
 uint16_t MP_LSM9DS1::to15BitWord(int16_t value){
@@ -426,29 +457,33 @@ int8_t MP_LSM9DS1::setMagInterrupt( float threshold, bool xDetect, bool yDetect,
 
     if (xDetect || yDetect || zDetect){
         if (threshold < 0)
-            threshold = -threshold; // threshold out of ranfe
+            threshold = -threshold; // threshold out of range
         uint16_t uint15Threshold = (uint16_t) (threshold * 1000 / this->magScale);
         if (uint15Threshold > 0x7FFF)
-            return -5; // threshold out of range
+            return ErrorCodes::invalidDataFormatOrRange; // threshold out of range
         this->writeByte(this->magIdentifier, MAG_INT_THR_REG, (uint8_t) (uint15Threshold % (1<<7)));
         this->writeByte(this->magIdentifier, MAG_INT_THR_REG + 1, (uint8_t) (uint15Threshold / (1 << 8)));
     }
 
-    return 0;
+    return ErrorCodes::noError;
 }
 
+//Returns the content of the interrupt status register of the accelerometer.
 uint8_t MP_LSM9DS1::getAccInterruptStatus(){
     return this->readByte(this->gyroIdentifier, ACC_INT_SRC_REG);
 }
 
+//Returns the content of the interrupt status register of the gyroscope.
 uint8_t MP_LSM9DS1::getGyroInterruptStatus(){
     return this->readByte(this->gyroIdentifier, GYRO_INT_SRC_REG);
 }
 
+//Returns the content of the interrupt status register of the magnetometer.
 uint8_t MP_LSM9DS1::getMagInterruptStatus(){
     return this->readByte(this->magIdentifier, MAG_INT_SRC_REG);
 }
 
+//Updates the measurements in the gyroRawMeasurements and gyroMeasurements arrays
 void MP_LSM9DS1::updateGyroMeasurements(){
     //read gyro output values: 16 bit integer in two's complement , byteorder = little (msb is last)
     uint8_t axisRegs[3] = {GYRO_X_REG, GYRO_Y_REG, GYRO_Z_REG};
@@ -460,6 +495,7 @@ void MP_LSM9DS1::updateGyroMeasurements(){
     }
 }
 
+//Updates the measurements in the accRawMeasurements and accMeasurements arrays
 void MP_LSM9DS1::updateAccMeasurements(){
     uint8_t axisRegs[3] = {ACC_X_REG, ACC_Y_REG, ACC_Z_REG};
     for (uint8_t i = 0; i <= 2; i++){
@@ -470,6 +506,7 @@ void MP_LSM9DS1::updateAccMeasurements(){
     }
 }
 
+//Updates the measurements in the magRawMeasurements and magMeasurements arrays
 void MP_LSM9DS1::updateMagMeasurements(){
     uint8_t axisRegs[3] = {MAG_X_REG, MAG_Y_REG, MAG_Z_REG};
     for (uint8_t i = 0; i <= 2; i++){
@@ -487,5 +524,6 @@ String MP_LSM9DS1::getErrorString(int8_t errorCode){
     if (errorCode == ErrorCodes::i2cCommunicationError) return "I2C communication channel error";
     if (errorCode == ErrorCodes::spiCommunicationError) return "SPI communication channel error";
     if (errorCode == ErrorCodes::invalidDataFormatOrRange) return "Invalid data format/range (input data out of range)";
+    if (errorCode == ErrorCodes::noCommunicationProtocolSpecified) return "No communication protocol specified, please select one with useI2C or useSPI";
     else return "Unknown error";
 }
