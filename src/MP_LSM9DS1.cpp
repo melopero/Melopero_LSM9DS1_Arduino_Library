@@ -181,7 +181,9 @@ uint8_t MP_LSM9DS1::writeFlag(uint8_t deviceIdentifier, uint8_t registerAddress,
 
 
 void MP_LSM9DS1::close(){
-    if (this->i2cEnabled){    }
+    if (this->i2cEnabled){
+        //Nothing to do here
+    }
     else if (this->spiEnabled){
         SPI.end();
         delete (this->spiSettings);
@@ -411,7 +413,8 @@ int8_t MP_LSM9DS1::setGyroInterrupt(float xThreshold, bool xDetect, bool xDetect
             return ErrorCodes::invalidDataFormatOrRange;
         this->writeByte(this->gyroIdentifier, GYRO_Z_INT_THR_REG, (uint8_t) (_15_bitZThreshold / (1 << 8)));
         this->writeByte(this->gyroIdentifier, GYRO_Z_INT_THR_REG + 1, (uint8_t) (_15_bitZThreshold % (1 << 7)));
-        this->writeFlag(this->gyroIdentifier, GYRO_INT_CFG_REG, zDetectHigh ? 0b10 : 0b01, 6, 2);    }
+        this->writeFlag(this->gyroIdentifier, GYRO_INT_CFG_REG, zDetectHigh ? 0b10 : 0b01, 6, 2);
+    }
 
     this->writeByte(this->gyroIdentifier, GYRO_INT_DUR_REG, samplesToRecognize | (waitBeforeExitingInterrupt ? 0x80 : 0x00));
     this->writeFlag(this->gyroIdentifier, INT1_CTRL_REG, hardwareInterrupt ? 1 : 0, 8, 1);
@@ -431,7 +434,8 @@ uint16_t MP_LSM9DS1::to15BitWord(int16_t value){
         convertedValue &= 0x7FFF; // flip msb to 0 (15 bit word not 16 !)
         convertedValue += 1; // add one to have the correct value
         return convertedValue;
-    }}
+    }
+}
 
 /**
  * @param threshold If measurement exceeds on positively (or negatively) the
