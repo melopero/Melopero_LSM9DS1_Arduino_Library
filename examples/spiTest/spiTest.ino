@@ -7,11 +7,11 @@ int waitMillis = 1000;
 
 void setup() {
   Serial.begin(9600);
-
+  
   //Set the device to use the SPI communication protocol. You have to provide the chip select pins that you use.
   Serial.print("starting, setup SPI: ");
   int s = device.useSPI(gyroSelect, magSelect);
-  Serial.println(device.getErrorString(s));
+  Serial.println(device.getErrorString(s)); 
   
   Serial.print("Setting Gyro output data rate: ");
   Serial.println(device.setGyroODR(OutputDataRate::Hz_10));
