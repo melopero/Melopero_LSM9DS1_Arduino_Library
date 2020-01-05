@@ -1,3 +1,5 @@
+//Author: Leonardo La Rocca info@melopero.com
+
 #include "MP_LSM9DS1.h"
 
 //Creates the object representing the device. To actually use the device

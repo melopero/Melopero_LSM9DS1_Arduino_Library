@@ -1,3 +1,5 @@
+//Author: Leonardo La Rocca info@melopero.com
+
 #ifndef MP_LSM9DS1_H_INCLUDED
 #define MP_LSM9DS1_H_INCLUDED
 
