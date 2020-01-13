@@ -110,6 +110,7 @@ void printMagMeasurements(){
   Serial.print(device.magMeasurements[1]);
   Serial.print(" z : ");
   Serial.print(device.magMeasurements[2]);
+  Serial.println();
 }
 
 void interruptHandler(){
