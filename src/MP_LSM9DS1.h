@@ -161,7 +161,7 @@ class MP_LSM9DS1 {
     //methods
     public:
         int8_t useI2C(uint8_t gyroAddress = 0x6b, uint8_t magAddress = 0x1e);
-        int8_t useSPI(uint8_t gyroChipSelectPin , uint8_t magnetometerChipSelectPin, uint32_t maxTransmissionFreq = 10000000);
+        int8_t useSPI(uint8_t gyroChipSelectPin , uint8_t magnetometerChipSelectPin, uint32_t maxTransmissionFreq = 8000000);
 
         uint8_t readByte(uint8_t deviceIdentifier, uint8_t registerAddress);
         uint8_t writeByte(uint8_t deviceIdentifier, uint8_t registerAddress, uint8_t value);
