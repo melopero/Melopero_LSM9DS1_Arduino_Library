@@ -11,7 +11,7 @@
 //    SCL <------> SCL
 //    SDA <------> SDA
 //    GND <------> GND
-//   INT1 <------> 2
+//   INT1 <------> interruptPin
 //Note: You can use the pin you like to listen for the interrupt.
 //Note: Do not connect the device to the 5V pin!
 //
@@ -23,7 +23,7 @@
 //    CSG <------>  9 (CS1)
 //    CSM <------> 10 (CS2)
 // SDOG, SDOM <------> 12 (MISO)
-//   INT1 <------>  2
+//   INT1 <------>  interruptPin
 //Note: SDOG and SDOM must be connected both to the same pin (MISO) therefore if
 //      you want to use both devices with the SPI protocol you have to connect
 //      SDOG and SDOM . (For example on a breadboard).
@@ -35,7 +35,7 @@ MP_LSM9DS1 device;
 boolean interruptOccurred = false;
 
 //This is the pin that will listen for the hardware interrupt.
-const byte interruptPin = 2;
+const byte interruptPin = 1;
 
 void setup() {
   Serial.begin(9600);
@@ -49,6 +49,10 @@ void setup() {
   Serial.print("starting, setup i2c: ");
   Serial.println(device.getErrorString(device.useI2C()));
 
+  //Reset all the settings
+  Serial.print("Resetting settings... ");
+  Serial.println(device.getErrorString(device.resetSettings()));
+
   //Next we want to set our output data rate, this will influence the
   //"responsiveness" of the interrupt.
   Serial.print("Setting Magnetometer output data rate: ");
@@ -59,10 +63,10 @@ void setup() {
   device.resetInterruptSettings(true, true, true);
 
   //Now we want to setup our interrupt , we want to fire an hardware interrupt
-  //every time the the measure on the x-axis exceeds 0.5 G (is less than -0.5 G or greater than 0.5 G).
+  //every time the the measure on the x-axis exceeds 0.33 G (is less than -0.33 G or greater than 0.33 G).
   //We simply call the setMagInterrupt function which takes care of this for us.
   //Let's break down the function arguments in order to understand better what is going on.
-  //  (float) 0.5f  ---> the threshold value (this gets converted to a raw threshold value (-> documentation))
+  //  (float) 0.33f  ---> the threshold value (this gets converted to a raw threshold value (-> documentation))
   //  (bool) true   ---> should the x-axis be detected ?
   //  (bool) false  ---> should the y-axis be detected ?
   //  (bool) false  ---> should the z-axis be detected ?
@@ -70,11 +74,12 @@ void setup() {
   //  (bool) true   ---> should the interrupt signal be HIGH (true) or LOW (false) on active ?
   //  (bool) false  ---> latchInterrupt: should the intM pin remain in the same  state until getMagInterrupt is called?
   //  (bool) true   ---> this flag determines if an hardware interrupt should be fired on the intM pin.
-  device.setMagInterrupt(.5f, true, false, false,
+  device.setMagInterrupt(.33f, true, false, false,
                          true, false, true);
 
   //Next we want to setup our interruptPin to detect the interrupt and to call our
   //interruptHandler function each time an interrupt is triggered.
+  pinMode(interruptPin, INPUT);
   attachInterrupt(digitalPinToInterrupt(interruptPin), interruptHandler, RISING);
 }
 

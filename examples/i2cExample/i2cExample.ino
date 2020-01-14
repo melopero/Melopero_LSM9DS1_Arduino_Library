@@ -10,8 +10,7 @@
 //    SCL <------> SCL
 //    SDA <------> SDA
 //    GND <------> GND
-//   INT1 <------> 2
-//Note: You can use the pin you like to listen for the interrupt.
+//
 //Note: Do not connect the device to the 5V pin!
 
 #include <MP_LSM9DS1.h>

@@ -11,7 +11,7 @@
 //    SCL <------> SCL
 //    SDA <------> SDA
 //    GND <------> GND
-//   INT1 <------> 2
+//   INT1 <------> interruptPin
 //Note: You can use the pin you like to listen for the interrupt.
 //Note: Do not connect the device to the 5V pin!
 //
@@ -23,7 +23,7 @@
 //    CSG <------>  9 (CS1)
 //    CSM <------> 10 (CS2)
 // SDOG, SDOM <------> 12 (MISO)
-//   INT1 <------>  2
+//   INT1 <------>  interruptPin
 //Note: SDOG and SDOM must be connected both to the same pin (MISO) therefore if
 //      you want to use both devices with the SPI protocol you have to connect
 //      SDOG and SDOM . (For example on a breadboard).
@@ -35,7 +35,7 @@ MP_LSM9DS1 device;
 boolean interruptOccurred = false;
 
 //This is the pin that will listen for the hardware interrupt.
-const byte interruptPin = 2;
+const byte interruptPin = 1;
 
 void setup() {
   Serial.begin(9600);
@@ -48,6 +48,10 @@ void setup() {
   //(in the pinout above: gyroCS = 9, magCS = 10)
   Serial.print("starting, setup i2c: ");
   Serial.println(device.getErrorString(device.useI2C()));
+
+  //Reset all the settings
+  Serial.print("Resetting settings... ");
+  Serial.println(device.getErrorString(device.resetSettings()));
 
   //Next we want to set our output data rate, this will influence the
   //"responsiveness" of the interrupt.
@@ -74,10 +78,11 @@ void setup() {
   //  (bool) false ---> should the device wait for the number of samples specified above before exiting the interrupt
   //  (bool) true  ---> this flag determines if an hardware interrupt should be fired on the int1 pin.
   device.setAccInterrupt(.5f, true, true, 0, false, false, 0, false, false,
-                                        false, 100, false, true);
+                                        false, 0, false, true);
 
   //Next we want to setup our interruptPin to detect the interrupt and to call our
   //interruptHandler function each time an interrupt is triggered.
+  //pinMode(interruptPin, INPUT);
   attachInterrupt(digitalPinToInterrupt(interruptPin), interruptHandler, RISING);
 }
 
