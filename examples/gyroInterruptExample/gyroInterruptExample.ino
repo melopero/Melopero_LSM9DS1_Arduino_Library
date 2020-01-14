@@ -83,6 +83,7 @@ void setup() {
 
   //Next we want to setup our interruptPin to detect the interrupt and to call our
   //interruptHandler function each time an interrupt is triggered.
+  pinMode(interruptPin, INPUT);
   attachInterrupt(digitalPinToInterrupt(interruptPin), interruptHandler, FALLING);
 }
 
