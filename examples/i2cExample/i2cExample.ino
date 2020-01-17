@@ -5,10 +5,10 @@
 //the I2C communication protocol.
 //First make sure that your connections are setup correctly:
 //I2C pinout:
-//LSM9DS1 <------> Arduino
-//    3v3 <------> 3v3
-//    SCL <------> SCL
-//    SDA <------> SDA
+//LSM9DS1 <------> Arduino MKR
+//    3v3 <------> VCC
+//    SCL <------> SCL (12)
+//    SDA <------> SDA (11)
 //    GND <------> GND
 //
 //Note: Do not connect the device to the 5V pin!

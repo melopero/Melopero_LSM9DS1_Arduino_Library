@@ -6,24 +6,24 @@
 //I2C or SPI communication protocol.
 //First make sure that your connections are setup correctly:
 //I2C pinout:
-//LSM9DS1 <------> Arduino
-//    3v3 <------> 3v3
-//    SCL <------> SCL
-//    SDA <------> SDA
+//LSM9DS1 <------> Arduino MKR
+//    3v3 <------> VCC
+//    SCL <------> SCL (12)
+//    SDA <------> SDA (11)
 //    GND <------> GND
-//   INT1 <------> interruptPin
+//   INTM <------> interruptPin
 //Note: You can use the pin you like to listen for the interrupt.
 //Note: Do not connect the device to the 5V pin!
 //
 //SPI pinout:
-//LSM9DS1 <------> Arduino
-//    3v3 <------> 3v3
-//    SCL <------> 13 (SCL)
-//    SDA <------> 11 (MOSI)
-//    CSG <------>  9 (CS1)
-//    CSM <------> 10 (CS2)
-// SDOG, SDOM <------> 12 (MISO)
-//   INT1 <------>  interruptPin
+//LSM9DS1 <------> Arduino MKR
+//    3v3 <------> VCC
+//    SCL <------> SCK (9)
+//    SDA <------> MOSI (8)
+//    CSG <------> CS1 (6)
+//    CSM <------> CS2 (7)
+// SDOG, SDOM <------> MISO (10)
+//   INTM <------>  interruptPin
 //Note: SDOG and SDOM must be connected both to the same pin (MISO) therefore if
 //      you want to use both devices with the SPI protocol you have to connect
 //      SDOG and SDOM . (For example on a breadboard).

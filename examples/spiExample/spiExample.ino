@@ -5,14 +5,14 @@
 //the SPI communication protocol.
 //First make sure that your connections are setup correctly:
 //SPI pinout:
-//LSM9DS1 <------> Arduino
-//    3v3 <------> 3v3
-//    SCL <------> 13 (SCL)
-//    SDA <------> 11 (MOSI)
-//    CSG <------>  9 (CS1)
-//    CSM <------> 10 (CS2)
-// SDOG, SDOM <------> 12 (MISO)
-//   INT1 <------>  2
+//LSM9DS1 <------> Arduino MKR
+//    3v3 <------> VCC
+//    SCL <------> SCK (9)
+//    SDA <------> MOSI (8)
+//    CSG <------> CS1 (6)
+//    CSM <------> CS2 (7)
+// SDOG, SDOM <------> MISO (10)
+//
 //Note: SDOG and SDOM must be connected both to the same pin (MISO) therefore if
 //      you want to use both devices with the SPI protocol you have to connect
 //      SDOG and SDOM . (For example on a breadboard).
@@ -22,8 +22,8 @@
 
 MP_LSM9DS1 device;
 
-int gyroSelect = 9;
-int magSelect = 10;
+int gyroSelect = 6;
+int magSelect = 7;
 
 int waitMillis = 1000;
 
