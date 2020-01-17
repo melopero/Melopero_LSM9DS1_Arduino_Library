@@ -45,7 +45,7 @@ void setup() {
   //status returned by most of the functions.
   //Note: if you want to use SPI you have to call useSPI(gyroCS, magCS)
   //instead of useI2C. gyroCS and magCS are the pin select pins you used
-  //(in the pinout above: gyroCS = 9, magCS = 10)
+  //(in the pinout above: gyroCS = 6, magCS = 7)
   Serial.print("starting, setup i2c: ");
   Serial.println(device.getErrorString(device.useI2C()));
 

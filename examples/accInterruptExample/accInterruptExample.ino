@@ -45,7 +45,7 @@ void setup() {
   //status returned by most of the functions.
   //Note: if you want to use SPI you have to call useSPI(gyroCS, magCS)
   //instead of useI2C. gyroCS and magCS are the pin select pins you used
-  //(in the pinout above: gyroCS = 9, magCS = 10)
+  //(in the pinout above: gyroCS = 6, magCS = 7)
   Serial.print("starting, setup i2c: ");
   Serial.println(device.getErrorString(device.useI2C()));
 
@@ -72,7 +72,7 @@ void setup() {
   //  The next six arguments are the same for the y and z axis and since we don't want to detect them we set them to false.
   //  The next arguments are optional, but since we want to fire an hardware interrupt we need to set them correctly!
   //  (bool) false ---> and / or event combination for the interrupts on the three axes
-  //  (uint8_t) 100 --> how many samples must the device recognise before triggering the interrupt ? If we set our accelerometer
+  //  (uint8_t) 0 --> how many samples must the device recognise before triggering the interrupt ? If we set our accelerometer
   //                    to work at 119Hz and set this to 119, an interrupt will be triggered only after one second ( the time the device
   //                    needs to collect 119 samples ) of "triggering" samples.
   //  (bool) false ---> should the device wait for the number of samples specified above before exiting the interrupt
