@@ -147,7 +147,7 @@ This sensor communicates over I2C or SPI.
 
 
 
-### Installing
+### Install the library
 This library can be installed directly from the Library manager of the Arduino IDE. 
 <br>Open the Arduino IDE, select <b>Sketch-->Include Library-->Manage Libraries</b>.
 <br>Type "melopero lsm9ds1", select the library and click on "Install".
