@@ -66,7 +66,22 @@ This sensor communicates over I2C or SPI.
     <td>any digital pin</td> 
   </tr>
 </table>
-
+<br><b>Optional interrupt pins</b>:
+<table style="width:100%">
+  <tr>
+    <th>Melopero LSM9DS1</th>
+    <th>Arduino</th> 
+  </tr>
+  <tr>
+    <td>INT1 <br>(interrupt pin for Accelerometer and Gyroscope)</td>
+    <td>Any pin that supports interrupts</td> 
+  </tr>
+  <tr>
+    <td>INTM <br>(interrupt pin for Magnetometer)</td>
+    <td>Any pin that supports interrupts</td> 
+  </tr>
+  
+</table>
 
 
 
@@ -80,7 +95,6 @@ This library can be installed directly from the Library manager of the Arduino I
 
 
 ## Example using I2C bus
-The following example will Print out 100 measurments of the accelerometer, gyroscope and magnetometer at a .5s interval.
 ```C++ 
 //Author: Leonardo La Rocca
 //email: info@melopero.com
@@ -187,7 +201,6 @@ void printMagMeasurements(){
 ```
 
 ## Example using SPI bus
-The following example will Print out 100 measurments of the accelerometer, gyroscope and magnetometer at a .5s interval.
 ```C++ 
 //Author: Leonardo La Rocca
 //email: info@melopero.com
@@ -300,6 +313,10 @@ void printMagMeasurements(){
   Serial.print(device.magMeasurements[2]);
 }
 ```
+
+### Other examples:
+You'll find other examples using the interrupts pins [HERE](https://github.com/melopero/Melopero_LSM9DS1_Arduino_Library/tree/master/examples): 
+
 
 ### Attention:
 
