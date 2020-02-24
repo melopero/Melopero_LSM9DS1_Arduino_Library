@@ -1,4 +1,4 @@
-# Melopero_LSM9DS1_Arduino_Library
+# Melopero LSM9DS1 Arduino Library
 A library for interfacing the Melopero LSM9DS1 9-DOF breakout board with Arduino.
 <br> If you were looking for the Python3 library for the Raspberry Pi click [HERE](https://github.com/melopero/Melopero_LSM9DS1)
 
@@ -41,7 +41,7 @@ A library for interfacing the Melopero LSM9DS1 9-DOF breakout board with Arduino
     <td>Accelerometer+Gyro SPI MISO pin</td>
   </tr>
   <tr>
-    <td>SDOAG</td>
+    <td>SDOM</td>
     <td>Magnetometer SPI MISO pin</td>
   </tr>
   <tr>
@@ -124,7 +124,7 @@ This sensor communicates over I2C or SPI.
     <td>any digital pin</td> 
   </tr>
   <tr>
-    <td>CSAG</td>
+    <td>CSM</td>
     <td>any digital pin</td> 
   </tr>
 </table>
