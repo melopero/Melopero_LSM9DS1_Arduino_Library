@@ -1,8 +1,70 @@
 # Melopero_LSM9DS1_Arduino_Library
 A library for interfacing the Melopero LSM9DS1 9-DOF breakout board with Arduino.
+<br> If you were looking for the Python3 library for the Raspberry Pi click [HERE](https://github.com/melopero/Melopero_LSM9DS1)
 
 # Melopero LSM9DS1 breakout board
 ![melopero logo](images/melopero-lsm9ds1-main.jpg?raw=true)
+
+# Pinouts
+
+<table style="width:100%">
+  <tr>
+    <th>Melopero LSM9DS1</th>
+    <th>Description</th> 
+  </tr>
+  <tr>
+    <td>3V3</td>
+    <td>Input power pin. Apply 3.3V to this pin</td> 
+  </tr>
+  <tr>
+    <td>SCL</td>
+    <td>I2C or SPI Serial Clock pin</td> 
+  </tr>
+  <tr>
+    <td>SDA</td>
+    <td>I2C SDA pin or SPI MOSI pin</td> 
+  </tr>
+  <tr>
+    <td>GND</td>
+    <td>Ground pin</td>
+  </tr>
+  <tr>
+    <td>CSAG</td>
+    <td>Accelerometer+Gyro SPI Chip Select</td>
+  </tr>
+  <tr>
+    <td>CSM</td>
+    <td>Magnetometer SPI Chip Select</td>
+  </tr>
+  <tr>
+    <td>SDOAG</td>
+    <td>Accelerometer+Gyro SPI MISO pin</td>
+  </tr>
+  <tr>
+    <td>SDOAG</td>
+    <td>Magnetometer SPI MISO pin</td>
+  </tr>
+  <tr>
+    <td>INT1</td>
+    <td>Accelerometer+Gyro Interrupt pin</td>
+  </tr>
+   <tr>
+    <td>INTM</td>
+    <td>Magnetometer Interrupt pin</td>
+  </tr>
+  <tr>
+    <td>INT2</td>
+    <td>Another Interrupt pin for the accelerometer+gyro. <br>This pin is not supported in our library</td>
+  </tr>
+  <tr>
+    <td>DEN</td>
+    <td>Gyroscope data enable pin. <br>This pin is not supported in our library</td>
+  </tr>
+  <tr>
+    <td>DRDY</td>
+    <td>Magnetometer data ready pin. <br>This pin is not supported in our library</td>
+  </tr>
+</table>
 
 ## Getting Started
 ### Prerequisites
