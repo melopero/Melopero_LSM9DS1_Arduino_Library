@@ -10,19 +10,19 @@ A library for interfacing the Melopero LSM9DS1 9-DOF breakout board with Arduino
 <table style="width:100%">
   <tr>
     <th>Melopero LSM9DS1</th>
-    <th>Description</th> 
+    <th>Description</th>
   </tr>
   <tr>
     <td>3V3</td>
-    <td>Input power pin. Apply 3.3V to this pin</td> 
+    <td>Input power pin. Apply 3.3V to this pin</td>
   </tr>
   <tr>
     <td>SCL</td>
-    <td>I2C or SPI Serial Clock pin</td> 
+    <td>I2C or SPI Serial Clock pin</td>
   </tr>
   <tr>
     <td>SDA</td>
-    <td>I2C SDA pin or SPI MOSI pin</td> 
+    <td>I2C SDA pin or SPI MOSI pin</td>
   </tr>
   <tr>
     <td>GND</td>
@@ -78,77 +78,77 @@ This sensor communicates over I2C or SPI.
 <table style="width:100%">
   <tr>
     <th>Melopero LSM9DS1</th>
-    <th>Arduino</th> 
+    <th>Arduino</th>
   </tr>
   <tr>
     <td>3V3</td>
-    <td>VCC</td> 
+    <td>VCC</td>
   </tr>
   <tr>
     <td>SCL</td>
-    <td>SCL</td> 
+    <td>SCL</td>
   </tr>
   <tr>
     <td>SDA</td>
-    <td>SDA</td> 
+    <td>SDA</td>
   </tr>
   <tr>
     <td>GND</td>
-    <td>GND</td> 
+    <td>GND</td>
   </tr>
 </table>
 <br><b>SPI connections</b>:
 <table style="width:100%">
   <tr>
     <th>Melopero LSM9DS1</th>
-    <th>Arduino</th> 
+    <th>Arduino</th>
   </tr>
   <tr>
     <td>3V3</td>
-    <td>VCC</td> 
+    <td>VCC</td>
   </tr>
   <tr>
     <td>SCL</td>
-    <td>SCLK</td> 
+    <td>SCLK</td>
   </tr>
   <tr>
     <td>SDA</td>
-    <td>MOSI</td> 
+    <td>MOSI</td>
   </tr>
   <tr>
     <td>SDOAG, SDOM</td>
-    <td>MISO</td> 
+    <td>MISO</td>
   </tr>
   <tr>
     <td>CSAG</td>
-    <td>any digital pin</td> 
+    <td>any digital pin</td>
   </tr>
   <tr>
     <td>CSM</td>
-    <td>any digital pin</td> 
+    <td>any digital pin</td>
   </tr>
 </table>
 <br><b>Optional interrupt pins</b>:
 <table style="width:100%">
   <tr>
     <th>Melopero LSM9DS1</th>
-    <th>Arduino</th> 
+    <th>Arduino</th>
   </tr>
   <tr>
     <td>INT1 <br>(interrupt pin for Accelerometer and Gyroscope)</td>
-    <td>Any pin that supports interrupts</td> 
+    <td>Any pin that supports interrupts</td>
   </tr>
   <tr>
     <td>INTM <br>(interrupt pin for Magnetometer)</td>
-    <td>Any pin that supports interrupts</td> 
+    <td>Any pin that supports interrupts</td>
   </tr>
-  
+
 </table>
 
 
 
 ### Install the library
-This library can be installed directly from the Library manager of the Arduino IDE. 
+This library can be installed directly from the Library manager of the Arduino IDE.
 <br>Open the Arduino IDE, select <b>Sketch-->Include Library-->Manage Libraries</b>.
 <br>Type "melopero lsm9ds1", select the library and click on "Install".
 <br>The installation will include some examples, available under <b>File-->Examples-->Melopero LSM9DS1</b>.
@@ -157,7 +157,7 @@ This library can be installed directly from the Library manager of the Arduino I
 
 
 ## Example using I2C bus
-```C++ 
+```C++
 //Author: Leonardo La Rocca
 //email: info@melopero.com
 //
@@ -173,9 +173,9 @@ This library can be installed directly from the Library manager of the Arduino I
 //
 //Note: Do not connect the device to the 5V pin!
 
-#include <MP_LSM9DS1.h>
+#include <Melopero_LSM9DS1.h>
 
-MP_LSM9DS1 device;
+Melopero_LSM9DS1 device;
 
 int waitMillis = 1000;
 
@@ -263,7 +263,7 @@ void printMagMeasurements(){
 ```
 
 ## Example using SPI bus
-```C++ 
+```C++
 //Author: Leonardo La Rocca
 //email: info@melopero.com
 //
@@ -284,9 +284,9 @@ void printMagMeasurements(){
 //      SDOG and SDOM . (For example on a breadboard).
 //Note: do not connect the device to the 5V pin!
 
-#include <MP_LSM9DS1.h>
+#include <Melopero_LSM9DS1.h>
 
-MP_LSM9DS1 device;
+Melopero_LSM9DS1 device;
 
 int gyroSelect = 6;
 int magSelect = 7;
@@ -377,11 +377,9 @@ void printMagMeasurements(){
 ```
 
 ### Other examples:
-You'll find other examples using the interrupts pins [HERE](https://github.com/melopero/Melopero_LSM9DS1_Arduino_Library/tree/master/examples): 
+You'll find other examples using the interrupts pins [HERE](https://github.com/melopero/Melopero_LSM9DS1_Arduino_Library/tree/master/examples):
 
 
 ### Attention:
 
 This breakout board is compatible only with 3.3V power and logic.  
-
-
