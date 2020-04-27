@@ -1,11 +1,11 @@
 //Author: Leonardo La Rocca info@melopero.com
 
-#include "MP_LSM9DS1.h"
+#include "Melopero_LSM9DS1.h"
 
 //Creates the object representing the device. To actually use the device
 //you have to call useSPI(gyropin, magpin) or useI2C() to set the communication
 //protocol that you want to use.
-MP_LSM9DS1::MP_LSM9DS1(){
+Melopero_LSM9DS1::Melopero_LSM9DS1(){
     this->gyroScale = GyroscopeRange::AR_245DPS;
     this->accScale = AccelerometerRange::two_g;
     this->magScale = MagnetometerRange::four_G;
@@ -16,7 +16,7 @@ MP_LSM9DS1::MP_LSM9DS1(){
 //Configures the device (and library) to use the i2c protocol.
 //If no gyroAddress or magAddress are specified the default
 //used addresses will be.
-int8_t MP_LSM9DS1::useI2C(uint8_t gyroAddress, uint8_t magAddress){
+int8_t Melopero_LSM9DS1::useI2C(uint8_t gyroAddress, uint8_t magAddress){
     this->i2cEnabled = true;
     this->spiEnabled = false;
 
@@ -35,7 +35,7 @@ int8_t MP_LSM9DS1::useI2C(uint8_t gyroAddress, uint8_t magAddress){
 
 //Configures the device (and library) to use the spi protocol.
 //You must specify the chip select pins used for gyro and magnetometer.
-int8_t MP_LSM9DS1::useSPI(uint8_t gyroChipSelectPin , uint8_t magChipSelectPin, uint32_t maxTransmissionFreq){
+int8_t Melopero_LSM9DS1::useSPI(uint8_t gyroChipSelectPin , uint8_t magChipSelectPin, uint32_t maxTransmissionFreq){
     this->spiEnabled = true;
     this->i2cEnabled = false;
 
@@ -95,7 +95,7 @@ int8_t MP_LSM9DS1::useSPI(uint8_t gyroChipSelectPin , uint8_t magChipSelectPin, 
 
 
 
-uint8_t MP_LSM9DS1::readByte(uint8_t deviceIdentifier, uint8_t registerAddress){
+uint8_t Melopero_LSM9DS1::readByte(uint8_t deviceIdentifier, uint8_t registerAddress){
     if (this->i2cEnabled){
         //set register pointer
         Wire.beginTransmission(deviceIdentifier);
@@ -127,7 +127,7 @@ uint8_t MP_LSM9DS1::readByte(uint8_t deviceIdentifier, uint8_t registerAddress){
       }
 }
 
-uint8_t MP_LSM9DS1::writeByte(uint8_t deviceIdentifier, uint8_t registerAddress, uint8_t value){
+uint8_t Melopero_LSM9DS1::writeByte(uint8_t deviceIdentifier, uint8_t registerAddress, uint8_t value){
     uint8_t bytesWritten = 0;
     if (this->i2cEnabled){
         //set register pointer
@@ -168,7 +168,7 @@ uint8_t MP_LSM9DS1::writeByte(uint8_t deviceIdentifier, uint8_t registerAddress,
  * length = 4\n
  * result = 0b11001100
  */
-uint8_t MP_LSM9DS1::writeFlag(uint8_t deviceIdentifier, uint8_t registerAddress, uint8_t flag, uint8_t start, uint8_t length){
+uint8_t Melopero_LSM9DS1::writeFlag(uint8_t deviceIdentifier, uint8_t registerAddress, uint8_t flag, uint8_t start, uint8_t length){
     uint8_t _end = start - length;
     uint8_t regContent = this->readByte(deviceIdentifier, registerAddress);
 
@@ -180,7 +180,7 @@ uint8_t MP_LSM9DS1::writeFlag(uint8_t deviceIdentifier, uint8_t registerAddress,
 }
 
 
-void MP_LSM9DS1::close(){
+void Melopero_LSM9DS1::close(){
     if (this->i2cEnabled){
         //Nothing to do here
     }
@@ -192,7 +192,7 @@ void MP_LSM9DS1::close(){
 }
 
 
-int8_t MP_LSM9DS1::resetSettings(){
+int8_t Melopero_LSM9DS1::resetSettings(){
     int8_t bytesWritten = 0;
     bytesWritten = this->writeFlag(this->gyroIdentifier, CONTROL_REG_8, 0b101, 3, 3);
     if (bytesWritten == 0) return -1;
@@ -202,17 +202,17 @@ int8_t MP_LSM9DS1::resetSettings(){
 }
 
 //Sets the gyroscope's output data rate.
-int8_t MP_LSM9DS1::setGyroODR(uint8_t odr){
+int8_t Melopero_LSM9DS1::setGyroODR(uint8_t odr){
     return this->writeFlag(this->gyroIdentifier, GYRO_CONTROL_REG_1, odr, 8, 3) > 0 ? 0 : -1;
 }
 
 //Sets the Accelerometer's output data rate.
-int8_t MP_LSM9DS1::setAccODR(uint8_t odr){
+int8_t Melopero_LSM9DS1::setAccODR(uint8_t odr){
     return this->writeFlag(this->gyroIdentifier, ACC_CONTROL_REG_6, odr, 8, 3) > 0 ? 0 : -1;
 }
 
 //Sets the magnetometer's output data rate and mode.
-int8_t MP_LSM9DS1::setMagODR(uint8_t magOdr, uint8_t magMode){
+int8_t Melopero_LSM9DS1::setMagODR(uint8_t magOdr, uint8_t magMode){
     int8_t bytesWritten = 0;
     bytesWritten = this->writeFlag(this->magIdentifier, MAG_CONTROL_REG_3, magMode, 2, 2);
     if (bytesWritten == 0) return -2;
@@ -220,7 +220,7 @@ int8_t MP_LSM9DS1::setMagODR(uint8_t magOdr, uint8_t magMode){
     return bytesWritten > 0 ? 0 : -2;
 }
 
-int8_t MP_LSM9DS1::setGyroRange(float gyroRange){
+int8_t Melopero_LSM9DS1::setGyroRange(float gyroRange){
     uint8_t flag = 0b00;
     if (gyroRange == GyroscopeRange::AR_245DPS)
         flag = 0b00;
@@ -238,7 +238,7 @@ int8_t MP_LSM9DS1::setGyroRange(float gyroRange){
 }
 
 
-int8_t MP_LSM9DS1::setAccRange(float accRange){
+int8_t Melopero_LSM9DS1::setAccRange(float accRange){
     uint8_t flag = 0b00;
     if (accRange == AccelerometerRange::two_g)
         flag = 0b00;
@@ -258,7 +258,7 @@ int8_t MP_LSM9DS1::setAccRange(float accRange){
 }
 
 
-int8_t MP_LSM9DS1::setMagRange(float magRange){
+int8_t Melopero_LSM9DS1::setMagRange(float magRange){
     uint8_t flag = 0b00;
     if (magRange == MagnetometerRange::four_G)
         flag = 0b00;
@@ -277,7 +277,7 @@ int8_t MP_LSM9DS1::setMagRange(float magRange){
     return bytesWritten == 0 ? -2 : 0;
 }
 
-int8_t MP_LSM9DS1::resetInterruptSettings(bool resetAccInterrupt, bool resetGyroInterrupt, bool resetMagInterrupt){
+int8_t Melopero_LSM9DS1::resetInterruptSettings(bool resetAccInterrupt, bool resetGyroInterrupt, bool resetMagInterrupt){
     int8_t bytesWritten = 0;
     if (resetAccInterrupt){
         bytesWritten = this->writeByte(this->gyroIdentifier, ACC_INT_CFG_REG, 0x00);
@@ -310,7 +310,7 @@ int8_t MP_LSM9DS1::resetInterruptSettings(bool resetAccInterrupt, bool resetGyro
  * @param waitBeforeExitingInterrupt the number of samples to measure before exiting the interrupt
  * @param hardwareInterrupt if True generates an hardware interrupt on the int1 pin
  */
-int8_t MP_LSM9DS1::setAccInterrupt( float xThreshold, bool xDetect, bool xDetectHigh,
+int8_t Melopero_LSM9DS1::setAccInterrupt( float xThreshold, bool xDetect, bool xDetectHigh,
                                     float yThreshold, bool yDetect, bool yDetectHigh,
                                     float zThreshold, bool zDetect, bool zDetectHigh,
                                     bool andEventCombination, uint8_t samplesToRecognize,
@@ -370,7 +370,7 @@ int8_t MP_LSM9DS1::setAccInterrupt( float xThreshold, bool xDetect, bool xDetect
  * @param decrementCounter
  * @param hardwareInterrupt if True generates an hardware interrupt on the int1 pin
  */
-int8_t MP_LSM9DS1::setGyroInterrupt(float xThreshold, bool xDetect, bool xDetectHigh,
+int8_t Melopero_LSM9DS1::setGyroInterrupt(float xThreshold, bool xDetect, bool xDetectHigh,
                         float yThreshold, bool yDetect, bool yDetectHigh,
                         float zThreshold, bool zDetect, bool zDetectHigh,
                         bool andEventCombination, uint8_t samplesToRecognize,
@@ -422,7 +422,7 @@ int8_t MP_LSM9DS1::setGyroInterrupt(float xThreshold, bool xDetect, bool xDetect
     return ErrorCodes::noError;
 }
 
-uint16_t MP_LSM9DS1::to15BitWord(int16_t value){
+uint16_t Melopero_LSM9DS1::to15BitWord(int16_t value){
     if (value < -16384 && value > 16383) //minValue = -16384 maxValue = 16383
         return 0x8000; //threshold out of range error
 
@@ -448,7 +448,7 @@ uint16_t MP_LSM9DS1::to15BitWord(int16_t value){
           state until getMagInterrupt is called.
  * @param hardwareInterrupt if True generates an hardware interrupt on the INT_M pin
  */
-int8_t MP_LSM9DS1::setMagInterrupt( float threshold, bool xDetect, bool yDetect, bool zDetect,
+int8_t Melopero_LSM9DS1::setMagInterrupt( float threshold, bool xDetect, bool yDetect, bool zDetect,
                                     bool interruptActiveHigh, bool latchInterrupt,
                                     bool hardwareInterrupt){
     uint8_t flag = 0x00;
@@ -475,22 +475,22 @@ int8_t MP_LSM9DS1::setMagInterrupt( float threshold, bool xDetect, bool yDetect,
 }
 
 //Returns the content of the interrupt status register of the accelerometer.
-uint8_t MP_LSM9DS1::getAccInterruptStatus(){
+uint8_t Melopero_LSM9DS1::getAccInterruptStatus(){
     return this->readByte(this->gyroIdentifier, ACC_INT_SRC_REG);
 }
 
 //Returns the content of the interrupt status register of the gyroscope.
-uint8_t MP_LSM9DS1::getGyroInterruptStatus(){
+uint8_t Melopero_LSM9DS1::getGyroInterruptStatus(){
     return this->readByte(this->gyroIdentifier, GYRO_INT_SRC_REG);
 }
 
 //Returns the content of the interrupt status register of the magnetometer.
-uint8_t MP_LSM9DS1::getMagInterruptStatus(){
+uint8_t Melopero_LSM9DS1::getMagInterruptStatus(){
     return this->readByte(this->magIdentifier, MAG_INT_SRC_REG);
 }
 
 //Updates the measurements in the gyroRawMeasurements and gyroMeasurements arrays
-void MP_LSM9DS1::updateGyroMeasurements(){
+void Melopero_LSM9DS1::updateGyroMeasurements(){
     //read gyro output values: 16 bit integer in two's complement , byteorder = little (msb is last)
     uint8_t axisRegs[3] = {GYRO_X_REG, GYRO_Y_REG, GYRO_Z_REG};
     for (uint8_t i = 0; i <= 2; i++){
@@ -502,7 +502,7 @@ void MP_LSM9DS1::updateGyroMeasurements(){
 }
 
 //Updates the measurements in the accRawMeasurements and accMeasurements arrays
-void MP_LSM9DS1::updateAccMeasurements(){
+void Melopero_LSM9DS1::updateAccMeasurements(){
     uint8_t axisRegs[3] = {ACC_X_REG, ACC_Y_REG, ACC_Z_REG};
     for (uint8_t i = 0; i <= 2; i++){
         this->accRawMeasurements[i] = this->readByte(this->gyroIdentifier, axisRegs[i]);
@@ -513,7 +513,7 @@ void MP_LSM9DS1::updateAccMeasurements(){
 }
 
 //Updates the measurements in the magRawMeasurements and magMeasurements arrays
-void MP_LSM9DS1::updateMagMeasurements(){
+void Melopero_LSM9DS1::updateMagMeasurements(){
     uint8_t axisRegs[3] = {MAG_X_REG, MAG_Y_REG, MAG_Z_REG};
     for (uint8_t i = 0; i <= 2; i++){
         this->magRawMeasurements[i] = this->readByte(this->magIdentifier, axisRegs[i]);
@@ -523,7 +523,7 @@ void MP_LSM9DS1::updateMagMeasurements(){
     }
 }
 
-String MP_LSM9DS1::getErrorString(int8_t errorCode){
+String Melopero_LSM9DS1::getErrorString(int8_t errorCode){
     if (errorCode >= ErrorCodes::noError) return "No error / Number of bytes written";
     if (errorCode == ErrorCodes::gyroCommunicationError) return "Communication Error with the gyroscope sensor.";
     if (errorCode == ErrorCodes::magCommunicationError) return "Communication Error with the magnetometer sensor.";

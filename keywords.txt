@@ -1,7 +1,7 @@
 # Syntax Coloring Map For Melopero LSM9DS1
 
 # Datatypes (KEYWORD1)
-MP_LSM9DS1	KEYWORD1
+Melopero_LSM9DS1	KEYWORD1
 
 GyroscopeRange	KEYWORD3
 AccelerometerRange	KEYWORD3

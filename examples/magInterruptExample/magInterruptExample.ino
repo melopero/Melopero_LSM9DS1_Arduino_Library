@@ -28,9 +28,9 @@
 //      you want to use both devices with the SPI protocol you have to connect
 //      SDOG and SDOM . (For example on a breadboard).
 
-#include <MP_LSM9DS1.h>
+#include <Melopero_LSM9DS1.h>
 
-MP_LSM9DS1 device;
+Melopero_LSM9DS1 device;
 
 boolean interruptOccurred = false;
 

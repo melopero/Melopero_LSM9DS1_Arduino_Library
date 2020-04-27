@@ -18,9 +18,9 @@
 //      SDOG and SDOM . (For example on a breadboard).
 //Note: do not connect the device to the 5V pin!
 
-#include <MP_LSM9DS1.h>
+#include <Melopero_LSM9DS1.h>
 
-MP_LSM9DS1 device;
+Melopero_LSM9DS1 device;
 
 int gyroSelect = 6;
 int magSelect = 7;

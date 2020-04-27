@@ -1,7 +1,7 @@
 //Author: Leonardo La Rocca info@melopero.com
 
-#ifndef MP_LSM9DS1_H_INCLUDED
-#define MP_LSM9DS1_H_INCLUDED
+#ifndef Melopero_LSM9DS1_H_INCLUDED
+#define Melopero_LSM9DS1_H_INCLUDED
 
 //#if __has_include("Wire.h")
 #include "Wire.h"
@@ -129,7 +129,7 @@ namespace ErrorCodes {
     const int8_t noCommunicationProtocolSpecified = -6;
 }
 
-class MP_LSM9DS1 {
+class Melopero_LSM9DS1 {
 
     //instance variables
     public:
@@ -156,7 +156,7 @@ class MP_LSM9DS1 {
 
     //constructor
     public:
-        MP_LSM9DS1();
+        Melopero_LSM9DS1();
 
     //methods
     public:
@@ -270,4 +270,4 @@ class MP_LSM9DS1 {
 
 };
 
-#endif // MP_LSM9DS1_H_INCLUDED
+#endif // Melopero_LSM9DS1_H_INCLUDED
