@@ -16,11 +16,12 @@ Melopero_LSM9DS1::Melopero_LSM9DS1(){
 //Configures the device (and library) to use the i2c protocol.
 //If no gyroAddress or magAddress are specified the default
 //used addresses will be.
-int8_t Melopero_LSM9DS1::useI2C(uint8_t gyroAddress, uint8_t magAddress){
+int8_t Melopero_LSM9DS1::useI2C(uint8_t gyroAddress, uint8_t magAddress, TwoWire &i2c_bus){
     this->i2cEnabled = true;
     this->spiEnabled = false;
 
-    Wire.begin();
+    i2c = &i2c_bus;
+
     this->i2cGyroAddress = gyroAddress;
     this->i2cMagAddress = magAddress;
 
@@ -98,12 +99,12 @@ int8_t Melopero_LSM9DS1::useSPI(uint8_t gyroChipSelectPin , uint8_t magChipSelec
 uint8_t Melopero_LSM9DS1::readByte(uint8_t deviceIdentifier, uint8_t registerAddress){
     if (this->i2cEnabled){
         //set register pointer
-        Wire.beginTransmission(deviceIdentifier);
-        Wire.write(registerAddress);
-        Wire.endTransmission();
+        i2c->beginTransmission(deviceIdentifier);
+        i2c->write(registerAddress);
+        i2c->endTransmission();
 
-        Wire.requestFrom(deviceIdentifier, 1);
-        return Wire.read();
+        i2c->requestFrom(deviceIdentifier, 1);
+        return i2c->read();
     }
 
     else if (this->spiEnabled){
@@ -131,10 +132,10 @@ uint8_t Melopero_LSM9DS1::writeByte(uint8_t deviceIdentifier, uint8_t registerAd
     uint8_t bytesWritten = 0;
     if (this->i2cEnabled){
         //set register pointer
-        Wire.beginTransmission(deviceIdentifier);
-        Wire.write(registerAddress);
-        bytesWritten = Wire.write(value);
-        Wire.endTransmission();
+        i2c->beginTransmission(deviceIdentifier);
+        i2c->write(registerAddress);
+        bytesWritten = i2c->write(value);
+        i2c->endTransmission();
     }
     else if (this->spiEnabled){
         //Select device through CS pin.

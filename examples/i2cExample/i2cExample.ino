@@ -26,7 +26,11 @@ void setup() {
   //device.getErrorString returns a readable interpretation for the
   //status returned by most of the functions.
   Serial.print("starting, setup i2c: ");
+  Wire.begin();
   Serial.println(device.getErrorString(device.useI2C()));
+  // If you want to use Wire1 instead of Wire:
+  // Wire1.begin();
+  // device.useI2C(gyroAddress=0x6b, magAddress=0x1e, Wire1);
 
   //Reset all the settings
   Serial.print("Resetting settings... ");

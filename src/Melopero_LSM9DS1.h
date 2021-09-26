@@ -133,6 +133,7 @@ class Melopero_LSM9DS1 {
 
     //instance variables
     public:
+        TwoWire *i2c;
         uint8_t i2cGyroAddress;
         uint8_t i2cMagAddress;
         uint8_t spiGyroPin;
@@ -145,6 +146,8 @@ class Melopero_LSM9DS1 {
         float magScale;
         bool i2cEnabled;
         bool spiEnabled;
+        //TwoWire *i2c; not portable :(
+        
 
         int16_t accRawMeasurements[3] = {0,0,0};
         int16_t gyroRawMeasurements[3] = {0,0,0};
@@ -160,7 +163,7 @@ class Melopero_LSM9DS1 {
 
     //methods
     public:
-        int8_t useI2C(uint8_t gyroAddress = 0x6b, uint8_t magAddress = 0x1e);
+        int8_t useI2C(uint8_t gyroAddress = 0x6b, uint8_t magAddress = 0x1e, TwoWire &i2c_bus = Wire);
         int8_t useSPI(uint8_t gyroChipSelectPin , uint8_t magnetometerChipSelectPin, uint32_t maxTransmissionFreq = 8000000);
 
         uint8_t readByte(uint8_t deviceIdentifier, uint8_t registerAddress);

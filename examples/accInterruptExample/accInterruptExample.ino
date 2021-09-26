@@ -47,6 +47,7 @@ void setup() {
   //instead of useI2C. gyroCS and magCS are the pin select pins you used
   //(in the pinout above: gyroCS = 6, magCS = 7)
   Serial.print("starting, setup i2c: ");
+  Wire.begin();
   Serial.println(device.getErrorString(device.useI2C()));
 
   //Reset all the settings
